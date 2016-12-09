@@ -2,3 +2,4 @@ BeautifulSoup
 mechanize
 tabulate
 fpdf
+pysqlite>=2.7.0

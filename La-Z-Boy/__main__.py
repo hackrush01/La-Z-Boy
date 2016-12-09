@@ -5,6 +5,7 @@ import urllib2
 from bs4 import BeautifulSoup
 from mechanize import Browser
 from tabulate import tabulate
+from updateDB import updateDB
 import fpdf
 import string
 
@@ -37,10 +38,7 @@ def pdf_save(data_movies,headers):
     pdf.output('La-Z-Boy.pdf')
 
 def getBSoup(url):
-    print'''
-Processing...
-
-    '''
+    print ('\nProcessing...\n')
     req = urllib2.urlopen(url)
     soup = BeautifulSoup(req.read(), "lxml")
     return soup
@@ -98,7 +96,7 @@ def search_channel(channel2):
 
     for i in range(0,len(movie_name2)):
         movie_name.append(movie_name2[i])
-        movie_name[i]=movie_name[i].encode('utf-8')
+        #movie_name[i]=movie_name[i].encode('utf-8')
         movie_name[i]=movie_name[i].encode('ascii','ignore').strip()
         time.append(time2_from[i]+"-"+time2_to[i])
 
@@ -108,7 +106,7 @@ def search_channel(channel2):
 
     for i in range(0, len(movie_name)):
         try:
-            print "Checking IMDb rating of "+ movie_name[i]
+            print ("Checking IMDb rating of "+ movie_name[i])
             movie_search = '+'.join(movie_name[i].split())
             movie_url = base_url + movie_search + '&s=all'
             #print movie_url
@@ -134,7 +132,8 @@ def search_channel(channel2):
     data_movies = []
     for i in range(0, len(movie_name)):
         data_movies.append([str(movie_name[i]), str(time[i]), ratings[i]])
-    print tabulate(data_movies, headers=headers)
+    updateDB(channel2, movie_name, time2_from, time2_to, ratings)
+    print (tabulate(data_movies, headers=headers))
 
     #Saving to pdf
     print("\nWant to save as pdf? Y/N")
@@ -147,10 +146,10 @@ def search_channel(channel2):
 
 def main():
 
-    print'''
-                                                                        Welcome to La-Z-Boy
-                                                                    For the love of good content
-    '''
+    print('''
+                                                              Welcome to La-Z-Boy
+                                                          For the love of good content
+    ''')
     #channel = raw_input("Enter name of the TV Channel: ")
     channel2 = raw_input("Enter name of the TV Channel: ")
     #channel = "-".join([item.strip() for item in channel.split(" ")])
